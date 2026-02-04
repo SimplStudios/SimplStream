@@ -74,7 +74,7 @@ export function DownloadAppDialog({ open, onOpenChange }: DownloadAppDialogProps
           </div>
 
           <a
-            href="https://github.com/JustANormalChurro/SimplStream"
+            href="https://github.com/SimplStudios/SimplStream/releases"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-lg font-bold text-lg transition-all bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white hover:scale-105 shadow-lg"

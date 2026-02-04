@@ -1,73 +1,184 @@
-# Welcome to your Lovable project
+<div align="center">
 
-## Project info
+# 🎬 SimplStream
 
-**URL**: https://lovable.dev/projects/b2fd4802-cee3-4482-bbb0-e98fd6fe6aa2
+### *It's not just streaming, it's SimplStream.*
 
-## How can I edit this code?
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-There are several ways of editing your application.
+**A beautiful, modern streaming platform with a Hulu-inspired UI**
 
-**Use Lovable**
+[🚀 Live Demo](https://simplstream.lovable.app) · [📱 Download App](https://github.com/SimplStudios/SimplStream/releases) · [🐛 Report Bug](https://github.com/SimplStudios/SimplStream/issues)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b2fd4802-cee3-4482-bbb0-e98fd6fe6aa2) and start prompting.
+</div>
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## ✨ Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🎥 **Content Discovery**
+| Feature | Description |
+|---------|-------------|
+| 🔥 **Trending Content** | Browse what's popular right now with real-time TMDB data |
+| 🎭 **Genre Browsing** | Explore Action, Comedy, Drama, Horror, Sci-Fi & more |
+| 🔍 **Smart Search** | AI-powered search with filters for year, rating, and genre |
+| 🎲 **Surprise Me** | Let SimplStream pick something perfect for your mood |
+| 📺 **Live TV** | 40+ live channels including news, sports, movies & music |
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 👤 **User Experience**
+| Feature | Description |
+|---------|-------------|
+| 👨‍👩‍👧‍👦 **Multiple Profiles** | Create up to 5 profiles per account with custom avatars |
+| 🔒 **Profile Locks** | PIN protection for individual profiles |
+| 📋 **My List** | Save your favorite movies and shows for later |
+| 🕐 **Watch History** | Continue where you left off across all devices |
+| 🌙 **Dark/Light Mode** | Beautiful themes that adapt to your preference |
 
-Follow these steps:
+### 🎨 **Modern Design**
+| Feature | Description |
+|---------|-------------|
+| 💎 **Hulu-Inspired UI** | Clean, modern interface with glass morphism effects |
+| 🔵 **Blue Accent Theme** | Elegant color scheme throughout the app |
+| 📱 **Mobile Optimized** | PWA-ready with native-like mobile navigation |
+| 🖼️ **Full-Width Hero** | Stunning 16:9 detail pages with backdrop imagery |
+| ✨ **Smooth Animations** | Polished transitions and hover effects |
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 🛠️ **Technical Features**
+| Feature | Description |
+|---------|-------------|
+| ⚡ **Lightning Fast** | Built with Vite for instant hot module replacement |
+| 🎯 **Type Safe** | Full TypeScript support for reliability |
+| 📦 **Component Library** | Built on shadcn/ui for consistent design |
+| 💾 **Local Storage** | Profiles and preferences persist locally |
+| 🔗 **TMDB Integration** | Real movie & TV data from The Movie Database |
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 📸 Screenshots
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+<div align="center">
+
+| Home | Detail | Live TV |
+|:---:|:---:|:---:|
+| Modern homepage with hero banner | Full-width detail pages | 40+ live channels |
+
+</div>
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/SimplStudios/SimplStream.git
+
+# Navigate to project
+cd SimplStream
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be running at `http://localhost:8080` 🎉
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## 📱 Mobile App
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Download the Android app from our [Releases Page](https://github.com/SimplStudios/SimplStream/releases).
 
-## What technologies are used for this project?
+> **Note:** Enable "Install from Unknown Sources" in Android settings to install the APK.
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🛠️ Tech Stack
 
-## How can I deploy this project?
+<div align="center">
 
-Simply open [Lovable](https://lovable.dev/projects/b2fd4802-cee3-4482-bbb0-e98fd6fe6aa2) and click on Share -> Publish.
+| Category | Technology |
+|----------|------------|
+| ⚛️ **Framework** | React 18 |
+| 📝 **Language** | TypeScript |
+| 🎨 **Styling** | Tailwind CSS |
+| 🧩 **Components** | shadcn/ui + Radix UI |
+| ⚡ **Build Tool** | Vite |
+| 🎬 **Data** | TMDB API |
+| 🔤 **Fonts** | Rubik |
 
-## Can I connect a custom domain to my Lovable project?
+</div>
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📁 Project Structure
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```
+SimplStream/
+├── public/              # Static assets
+├── src/
+│   ├── components/      # React components
+│   │   ├── ui/          # shadcn/ui components
+│   │   ├── HomeView.tsx
+│   │   ├── DetailView.tsx
+│   │   ├── LiveTVView.tsx
+│   │   ├── PlayerView.tsx
+│   │   └── ...
+│   ├── context/         # React context providers
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # Utility functions
+│   │   ├── tmdb.ts      # TMDB API integration
+│   │   ├── liveChannels.ts
+│   │   └── ...
+│   └── pages/           # Page components
+├── index.html
+├── tailwind.config.ts
+├── vite.config.ts
+└── package.json
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is for educational and personal use only. SimplStream does not host, store, or distribute any copyrighted content. All media information is provided by [TMDB](https://www.themoviedb.org/).
+
+---
+
+## 📧 Contact
+
+**SimplStudios** - simplstudios@protonmail.com
+
+Project Link: [https://github.com/SimplStudios/SimplStream](https://github.com/SimplStudios/SimplStream)
+
+---
+
+<div align="center">
+
+**Made with ❤️ by SimplStudios**
+
+*It's not just streaming, it's SimplStream.*
+
+</div>

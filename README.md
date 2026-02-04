@@ -11,7 +11,7 @@
 
 **A beautiful, modern streaming platform with a Hulu-inspired UI**
 
-[🚀 Live Demo](https://simplstream.lovable.app) · [📱 Download App](https://github.com/SimplStudios/SimplStream/releases) · [🐛 Report Bug](https://github.com/SimplStudios/SimplStream/issues)
+[🚀 Live Demo](https://simplstream.vercel.app) · [📱 Download App](https://github.com/SimplStudios/SimplStream/releases) · [🐛 Report Bug](https://github.com/SimplStudios/SimplStream/issues)
 
 </div>
 

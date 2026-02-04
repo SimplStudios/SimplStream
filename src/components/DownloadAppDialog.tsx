@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Download, Smartphone, CheckCircle, Github } from 'lucide-react';
+import { Download, Tv, CheckCircle, Github } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface DownloadAppDialogProps {
@@ -16,52 +16,52 @@ export function DownloadAppDialog({ open, onOpenChange }: DownloadAppDialogProps
       <DialogContent className={`max-w-2xl ${effectiveTheme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
         <DialogHeader>
           <DialogTitle className={`text-3xl font-bold ${textClass} flex items-center gap-3`}>
-            <Smartphone className="w-8 h-8 text-blue-500" />
-            Download SimplStream App
+            <Tv className="w-8 h-8 text-blue-500" />
+            Download SimplStream TV App
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6 mt-4">
           <div className={`${effectiveTheme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg p-6`}>
             <h3 className={`text-xl font-bold mb-4 ${textClass}`}>
-              📱 Currently Available on Android
+              📺 Built for Android TV & Fire TV
             </h3>
             <p className={`${effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'} mb-4`}>
-              Experience SimplStream on the go with our native Android application. Enjoy all the features you love in a mobile-optimized experience.
+              Experience SimplStream on the big screen with our native TV application. Designed for Android TV, Fire TV Stick, and other Android-based streaming devices.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h3 className={`text-lg font-bold ${textClass} mb-3`}>✨ Why Download the App?</h3>
+            <h3 className={`text-lg font-bold ${textClass} mb-3`}>✨ Why Download the TV App?</h3>
             <div className="space-y-2">
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <p className={effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                  <strong>Optimized Performance</strong>
+                  <strong>TV-Optimized Interface</strong> — Navigate with your remote
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <p className={effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                  <strong>Easy Access</strong>
+                  <strong>Big Screen Experience</strong> — Made for your living room
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <p className={effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                  <strong>Mobile-optimized UI</strong>
+                  <strong>D-Pad Navigation</strong> — Full remote control support
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <p className={effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                  <strong>Instant Updates</strong>
+                  <strong>Quick Launch</strong> — One-click access from your home screen
                 </p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <p className={effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                  <strong>Faster Performance</strong>
+                  <strong>Fire TV Compatible</strong> — Works on Fire Stick & Fire TV Cube
                 </p>
               </div>
             </div>
@@ -69,7 +69,7 @@ export function DownloadAppDialog({ open, onOpenChange }: DownloadAppDialogProps
 
           <div className={`${effectiveTheme === 'dark' ? 'bg-blue-900/20 border-blue-500/30' : 'bg-blue-50 border-blue-200'} border rounded-lg p-4`}>
             <p className={`text-sm ${effectiveTheme === 'dark' ? 'text-blue-300' : 'text-blue-800'}`}>
-              <strong>Note:</strong> The app is distributed via GitHub. You'll need to enable "Install from Unknown Sources" in your Android settings to install the APK file.
+              <strong>Note:</strong> The app is distributed via GitHub. On Fire TV, you can use Downloader app to install. On Android TV, enable "Install from Unknown Sources" in settings.
             </p>
           </div>
 
@@ -81,7 +81,7 @@ export function DownloadAppDialog({ open, onOpenChange }: DownloadAppDialogProps
           >
             <Github className="w-6 h-6" />
             <Download className="w-6 h-6" />
-            Download from GitHub
+            Download TV App from GitHub
           </a>
 
           <p className={`text-xs text-center ${effectiveTheme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>

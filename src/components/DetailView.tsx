@@ -143,7 +143,8 @@ export function DetailView({ profile, tmdbId, mediaType, onBack, onPlay, onShowC
 
   return (
     <div className={`min-h-screen ${bgClass} ${textClass}`}>
-      <div className={`fixed top-0 left-0 right-0 z-50 ${effectiveTheme === 'dark' ? 'glass-header' : 'glass-header-light'}`}>
+      {/* Header - positioned relatively on mobile for scrolling */}
+      <div className={`sticky top-0 left-0 right-0 z-50 ${effectiveTheme === 'dark' ? 'glass-header' : 'glass-header-light'}`}>
         <div className="w-full px-4 sm:px-6 2k:px-8 4k:px-12 py-2 sm:py-3 2k:py-4 4k:py-6 flex items-center justify-between">
           <button onClick={onBack} className={`flex items-center gap-2 4k:gap-4 ${textClass} hover:text-blue-400 transition-all hover:scale-105`}>
             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6 2k:w-8 2k:h-8 4k:w-12 4k:h-12" />
@@ -156,18 +157,19 @@ export function DetailView({ profile, tmdbId, mediaType, onBack, onPlay, onShowC
       </div>
 
       <div className="">
-        {/* Hero Section - Full Width 16:9 */}
-        <div className="relative w-full aspect-video max-h-[85vh] overflow-hidden">
+        {/* Hero Section - Mobile optimized height */}
+        <div className="relative w-full aspect-[16/10] sm:aspect-video max-h-[70vh] sm:max-h-[85vh] overflow-visible">
           <div className="absolute inset-0">
             <img 
               src={getTMDBImageUrl(detail.backdrop_path, 'original')} 
               alt={title}
-              className="w-full h-full object-cover object-top"
+              className="w-full h-full object-cover object-center sm:object-top"
             />
             <div className={`absolute inset-0 ${effectiveTheme === 'dark' ? 'hero-gradient-dark' : 'hero-gradient-light'}`}></div>
           </div>
           
-          <div className="relative z-10 h-full flex items-end pb-16 sm:pb-20 w-full px-6 sm:px-10 lg:px-16">
+          {/* Mobile: Content positioned outside hero for scrolling */}
+          <div className="relative z-10 h-full hidden sm:flex items-end pb-16 sm:pb-20 w-full px-6 sm:px-10 lg:px-16">
             <div className="flex flex-col md:flex-row gap-8 items-end md:items-end w-full animate-slide-up">
               {/* Poster */}
               <div className="hidden lg:block flex-shrink-0">
@@ -274,7 +276,97 @@ export function DetailView({ profile, tmdbId, mediaType, onBack, onPlay, onShowC
           <div className={`absolute bottom-0 left-0 right-0 h-32 ${effectiveTheme === 'dark' ? 'bg-gradient-to-t from-black to-transparent' : 'bg-gradient-to-t from-gray-50 to-transparent'}`}></div>
         </div>
 
-        <div className="w-full px-6 sm:px-10 lg:px-16 py-12 -mt-8 relative z-10">
+        {/* Mobile Content Section - Outside hero for proper scrolling */}
+        <div className="sm:hidden px-4 py-6 -mt-16 relative z-20">
+          {/* Genres */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {detail.genres?.slice(0, 3).map((genre: any) => (
+              <span key={genre.id} className={`px-3 py-1 text-xs font-semibold rounded-full ${effectiveTheme === 'dark' ? 'bg-white/10 text-white/90' : 'bg-black/10 text-black/90'}`}>
+                {genre.name}
+              </span>
+            ))}
+          </div>
+          
+          <h1 className={`text-2xl font-black mb-3 tracking-tight leading-tight ${textClass}`}>{title}</h1>
+          
+          {/* Meta info */}
+          <div className="flex flex-wrap items-center gap-3 mb-4 text-sm">
+            {releaseDate && (
+              <span className={`${effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'} font-medium`}>
+                {releaseDate.slice(0, 4)}
+              </span>
+            )}
+            {detail.vote_average > 0 && (
+              <div className="flex items-center gap-1 bg-yellow-500/20 px-2 py-0.5 rounded-full">
+                <Star size={14} fill="#FFD700" className="text-yellow-500" />
+                <span className="font-bold text-yellow-500 text-sm">{detail.vote_average.toFixed(1)}</span>
+              </div>
+            )}
+            {detail.runtime && (
+              <span className={`${effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                {formatDuration(detail.runtime)}
+              </span>
+            )}
+            {mediaType === 'tv' && detail.number_of_seasons && (
+              <span className={`${effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                {detail.number_of_seasons} Season{detail.number_of_seasons > 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+          
+          <p className={`text-sm mb-5 leading-relaxed ${effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+            {detail.overview}
+          </p>
+          
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3 mb-5">
+            <button 
+              onClick={() => onPlay(tmdbId, mediaType, selectedSeason, selectedEpisode)} 
+              className="btn-primary flex items-center justify-center gap-2 text-base w-full py-3"
+            >
+              <Play size={20} fill="currentColor" /> Start Watching
+            </button>
+            <div className="flex gap-2">
+              {trailer && (
+                <button 
+                  onClick={() => setShowTrailer(true)} 
+                  className="btn-secondary flex-1 flex items-center justify-center gap-2 text-sm py-2.5"
+                >
+                  <Play size={18} /> Trailer
+                </button>
+              )}
+              <button 
+                onClick={toggleWatchlist} 
+                className="btn-secondary flex-1 flex items-center justify-center gap-2 text-sm py-2.5"
+              >
+                {inWatchlist ? <X size={18} /> : <Plus size={18} />}
+                {inWatchlist ? 'Remove' : 'My List'}
+              </button>
+            </div>
+          </div>
+          
+          {/* Rating */}
+          <div className="flex items-center gap-3">
+            <span className={`text-sm font-medium ${effectiveTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Rate:</span>
+            <div className="flex gap-0.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button 
+                  key={star} 
+                  onClick={() => handleRating(star)}
+                  className="p-0.5"
+                >
+                  <Star 
+                    size={22} 
+                    fill={star <= userRating ? '#FFD700' : 'none'} 
+                    className={star <= userRating ? 'text-yellow-500' : 'text-gray-500'} 
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full px-4 sm:px-6 md:px-10 lg:px-16 py-8 sm:py-12 sm:-mt-8 relative z-10">
           {mediaType === 'tv' && detail.number_of_seasons && (
             <div className="mb-14">
               <h2 className="section-title text-xl sm:text-2xl 4k:text-5xl">Episodes</h2>

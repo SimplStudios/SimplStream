@@ -57,6 +57,9 @@ export function HomeView({ profile, onLogout, onShowDetail, onShowLiveTV, onProf
   const [showTrailer, setShowTrailer] = useState(false);
   const [trailerMuted, setTrailerMuted] = useState(true);
   const heroAutoplayEnabled = localStorage.getItem('simplstream_hero_autoplay') !== 'false';
+  
+  // Detect mobile device - disable trailer autoplay on mobile
+  const isMobile = typeof window !== 'undefined' && (window.innerWidth < 1024 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 
   useEffect(() => {
     let ticking = false;
@@ -139,8 +142,8 @@ export function HomeView({ profile, onLogout, onShowDetail, onShowLiveTV, onProf
       setActionMovies(action.results?.slice(0, 10) || []);
       setComedyMovies(comedy.results?.slice(0, 10) || []);
       
-      // Load trailer for hero if autoplay is enabled
-      if (heroItem && heroAutoplayEnabled) {
+      // Load trailer for hero if autoplay is enabled AND not on mobile
+      if (heroItem && heroAutoplayEnabled && !isMobile) {
         const mediaType = heroItem.media_type || ('title' in heroItem ? 'movie' : 'tv');
         try {
           const videos = await tmdbFetch(`/${mediaType}/${heroItem.id}/videos`);
@@ -148,7 +151,7 @@ export function HomeView({ profile, onLogout, onShowDetail, onShowLiveTV, onProf
             || videos.results?.find((v: any) => v.site === 'YouTube');
           if (trailer) {
             setHeroTrailerKey(trailer.key);
-            // Start showing trailer after a short delay
+            // Start showing trailer after a short delay (only on desktop)
             setTimeout(() => setShowTrailer(true), 2000);
           }
         } catch (e) {
@@ -466,14 +469,14 @@ export function HomeView({ profile, onLogout, onShowDetail, onShowLiveTV, onProf
                   
                   <div className={`my-2 border-t ${effectiveTheme === 'dark' ? 'border-white/10' : 'border-black/10'}`}></div>
                   
-                  {/* Download App Button */}
+                  {/* Download TV App Button */}
                   <button 
                     onClick={() => { setShowDownloadApp(true); setShowProfileMenu(false); }} 
                     className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-lg transition-all shadow-lg shadow-blue-500/25"
                   >
-                    <Smartphone size={18} />
+                    <Tv size={18} />
                     <Download size={18} />
-                    Download App
+                    Download TV App
                   </button>
                   
                   <div className={`my-2 border-t ${effectiveTheme === 'dark' ? 'border-white/10' : 'border-black/10'}`}></div>

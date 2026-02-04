@@ -474,7 +474,7 @@ export function DetailView({ profile, tmdbId, mediaType, onBack, onPlay, onShowC
           {similar.length > 0 && (
             <div>
               <h2 className="section-title text-xl sm:text-2xl">More Like This</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                 {similar.map((item: any) => (
                   <button
                     key={item.id}
@@ -484,14 +484,14 @@ export function DetailView({ profile, tmdbId, mediaType, onBack, onPlay, onShowC
                         onShowDetail(item.id, itemMediaType);
                       }
                     }}
-                    className="poster-card group"
+                    className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-105 hover:ring-2 hover:ring-blue-500 hover:shadow-xl"
                   >
                     <img 
-                      src={getTMDBImageUrl(item.poster_path, 'w342')} 
+                      src={getTMDBImageUrl(item.poster_path, 'w500')} 
                       alt={item.title || item.name} 
-                      className="w-full aspect-[2/3] object-cover" 
+                      className="w-full aspect-[16/10] object-cover object-top" 
                     />
-                    <span className="poster-card-title text-white">{item.title || item.name}</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </button>
                 ))}
               </div>

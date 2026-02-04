@@ -11,7 +11,7 @@
 
 **A beautiful, modern streaming platform with a Hulu-inspired UI**
 
-[🚀 Live Demo](https://simplstream.vercel.app) · [📱 Download App](https://github.com/SimplStudios/SimplStream/releases) · [🐛 Report Bug](https://github.com/SimplStudios/SimplStream/issues)
+[🚀 Live Demo](https://simplstream.vercel.app) · [📱 Download App](https://github.com/SimplStudios/SimplStreamTV/releases) · [🐛 Report Bug](https://github.com/SimplStudios/SimplStreamTV/issues)
 
 </div>
 
@@ -79,10 +79,10 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/SimplStudios/SimplStream.git
+git clone https://github.com/SimplStudios/SimplStreamTV.git
 
 # Navigate to project
-cd SimplStream
+cd SimplStreamTV
 
 # Install dependencies
 npm install
@@ -97,7 +97,7 @@ The app will be running at `http://localhost:8080` 🎉
 
 ## 📱 Mobile App
 
-Download the Android app from our [Releases Page](https://github.com/SimplStudios/SimplStream/releases).
+Download the Android app from our [Releases Page](https://github.com/SimplStudios/SimplStreamTV/releases).
 
 > **Note:** Enable "Install from Unknown Sources" in Android settings to install the APK.
 
@@ -171,7 +171,7 @@ This project is for educational and personal use only. SimplStream does not host
 
 **SimplStudios** - simplstudios@protonmail.com
 
-Project Link: [https://github.com/SimplStudios/SimplStream](https://github.com/SimplStudios/SimplStream)
+Project Link: [https://github.com/SimplStudios/SimplStreamTV](https://github.com/SimplStudios/SimplStreamTV)
 
 ---
 

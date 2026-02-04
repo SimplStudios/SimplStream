@@ -1,0 +1,2596 @@
+Access Token: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMzVhMmQ4YTY0NTUyMTNjYTYyMDFhYmExODA1Njg2MCIsIm5iZiI6MTc1MTc0OTQ1OC4zOTIsInN1YiI6IjY4Njk5MzUyMWQwZWY3OWVhYjcwMjU5OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.U2qkr0rOSg5WVFsruZacaE9V0Pf21S7ofF8HTN-jcRk
+
+API Key: 335a2d8a6455213ca6201aba18056860
+
+Docs Link: https://www.themoviedb.org/login?to=read_me&redirect_uri=/docs
+
+Full API:
+# The Movie Database (TMDB) API - Complete Guide & Reference
+
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Getting Started](#getting-started)
+3. [Authentication](#authentication)
+4. [Base URL & Endpoints](#base-url--endpoints)
+5. [API Reference - All Endpoints](#api-reference---all-endpoints)
+6. [Rate Limiting](#rate-limiting)
+7. [Image Configuration](#image-configuration)
+8. [Common Workflows](#common-workflows)
+9. [Error Handling](#error-handling)
+10. [Best Practices](#best-practices)
+
+---
+
+## Introduction
+
+The Movie Database (TMDB) API is a comprehensive entertainment database API that provides access to:
+- Movie and TV show metadata
+- Cast and crew information
+- High-quality images (posters, backdrops, profiles)
+- User ratings and reviews
+- Trending content
+- Watch provider information
+- Trailers and videos
+
+**API Version:** v3 (current), v4 (available)  
+**Base URL:** `https://api.themoviedb.org/3/`  
+**Protocol:** HTTPS only  
+**Format:** JSON
+
+---
+
+## Getting Started
+
+### Step 1: Create a TMDB Account
+1. Visit https://www.themoviedb.org/
+2. Click "Join TMDB" at the top right
+3. Complete registration with email, username, and password
+4. Verify your account via email
+
+### Step 2: Get Your API Key
+1. Log in to your TMDB account
+2. Click on your profile picture → "Settings"
+3. Navigate to the "API" section in the left sidebar
+4. Click "Create" or "Request an API Key"
+5. Fill out the application form (select "Developer" for non-commercial use)
+6. You'll receive two keys:
+   - **API Key (v3 auth):** For query parameter authentication
+   - **API Read Access Token (Bearer Token):** Recommended for header authentication
+
+### Step 3: Make Your First Request
+
+```bash
+# Using Bearer Token (Recommended)
+curl --request GET \
+  --url 'https://api.themoviedb.org/3/movie/550' \
+  --header 'Authorization: Bearer YOUR_ACCESS_TOKEN'
+
+# Using API Key
+curl --request GET \
+  --url 'https://api.themoviedb.org/3/movie/550?api_key=YOUR_API_KEY'
+```
+
+---
+
+## Authentication
+
+### Application Authentication (Recommended)
+
+**Method 1: Bearer Token (Best Practice)**
+```javascript
+const options = {
+  method: 'GET',
+  headers: {
+    accept: 'application/json',
+    Authorization: 'Bearer YOUR_ACCESS_TOKEN'
+  }
+};
+
+fetch('https://api.themoviedb.org/3/movie/550', options)
+  .then(res => res.json())
+  .then(json => console.log(json))
+  .catch(err => console.error(err));
+```
+
+**Method 2: API Key as Query Parameter**
+```javascript
+fetch('https://api.themoviedb.org/3/movie/550?api_key=YOUR_API_KEY')
+  .then(res => res.json())
+  .then(json => console.log(json));
+```
+
+### User Authentication (Session-Based)
+
+For user-specific actions (favorites, watchlist, ratings):
+
+**Step 1: Create Request Token**
+```bash
+GET https://api.themoviedb.org/3/authentication/token/new
+```
+
+**Step 2: Get User Authorization**
+Redirect user to:
+```
+https://www.themoviedb.org/authenticate/{REQUEST_TOKEN}?redirect_to=YOUR_CALLBACK_URL
+```
+
+**Step 3: Create Session**
+```bash
+POST https://api.themoviedb.org/3/authentication/session/new
+Body: {
+  "request_token": "YOUR_TOKEN"
+}
+```
+
+**Step 4: Use Session ID**
+```bash
+GET https://api.themoviedb.org/3/account?session_id=SESSION_ID
+```
+
+### Guest Session
+
+For temporary ratings without user accounts:
+```bash
+GET https://api.themoviedb.org/3/authentication/guest_session/new
+```
+
+---
+
+## Base URL & Endpoints
+
+**Base URL:** `https://api.themoviedb.org/3/`
+
+### Image Base URLs
+To display images, combine the base URL with the image path:
+
+```
+https://image.tmdb.org/t/p/{size}/{file_path}
+```
+
+**Available Sizes:**
+- **Posters:** w92, w154, w185, w342, w500, w780, original
+- **Backdrops:** w300, w780, w1280, original
+- **Profiles:** w45, w185, h632, original
+- **Logos:** w45, w92, w154, w185, w300, w500, original
+
+**Example:**
+```
+https://image.tmdb.org/t/p/w500/kqjL17yufvn9OVLyXYpvtyrFfak.jpg
+```
+
+---
+
+## API Reference - All Endpoints
+
+### ACCOUNT
+
+#### Get Account Details
+```
+GET /account/{account_id}
+```
+**Parameters:**
+- `account_id` (path) - Account ID
+- `session_id` (query) - Valid session ID
+
+**Response:**
+```json
+{
+  "avatar": {
+    "gravatar": {
+      "hash": "c9e9fc152ee756a900db85757c29815d"
+    },
+    "tmdb": {
+      "avatar_path": "/path.jpg"
+    }
+  },
+  "id": 123,
+  "iso_639_1": "en",
+  "iso_3166_1": "US",
+  "name": "John Doe",
+  "include_adult": false,
+  "username": "johndoe"
+}
+```
+
+#### Add to Favorites
+```
+POST /account/{account_id}/favorite
+```
+**Body:**
+```json
+{
+  "media_type": "movie",
+  "media_id": 550,
+  "favorite": true
+}
+```
+
+#### Add to Watchlist
+```
+POST /account/{account_id}/watchlist
+```
+**Body:**
+```json
+{
+  "media_type": "movie",
+  "media_id": 550,
+  "watchlist": true
+}
+```
+
+#### Get Favorite Movies
+```
+GET /account/{account_id}/favorite/movies
+```
+
+#### Get Favorite TV Shows
+```
+GET /account/{account_id}/favorite/tv
+```
+
+#### Get Rated Movies
+```
+GET /account/{account_id}/rated/movies
+```
+
+#### Get Rated TV Shows
+```
+GET /account/{account_id}/rated/tv
+```
+
+#### Get Rated TV Episodes
+```
+GET /account/{account_id}/rated/tv/episodes
+```
+
+#### Get Watchlist Movies
+```
+GET /account/{account_id}/watchlist/movies
+```
+
+#### Get Watchlist TV Shows
+```
+GET /account/{account_id}/watchlist/tv
+```
+
+#### Get Created Lists
+```
+GET /account/{account_id}/lists
+```
+
+---
+
+### AUTHENTICATION
+
+#### Create Request Token
+```
+GET /authentication/token/new
+```
+
+#### Create Session
+```
+POST /authentication/session/new
+```
+**Body:**
+```json
+{
+  "request_token": "your_token"
+}
+```
+
+#### Create Session with Login
+```
+POST /authentication/token/validate_with_login
+```
+**Body:**
+```json
+{
+  "username": "johndoe",
+  "password": "password123",
+  "request_token": "your_token"
+}
+```
+
+#### Create Guest Session
+```
+GET /authentication/guest_session/new
+```
+
+#### Delete Session
+```
+DELETE /authentication/session
+```
+**Body:**
+```json
+{
+  "session_id": "your_session_id"
+}
+```
+
+#### Validate API Key
+```
+GET /authentication
+```
+
+---
+
+### CERTIFICATIONS
+
+#### Get Movie Certifications
+```
+GET /certification/movie/list
+```
+**Response:** US ratings (G, PG, PG-13, R, NC-17), UK ratings, etc.
+
+#### Get TV Certifications
+```
+GET /certification/tv/list
+```
+
+---
+
+### CHANGES
+
+#### Get Movie Changes
+```
+GET /movie/changes
+```
+**Parameters:**
+- `start_date` (query) - YYYY-MM-DD format
+- `end_date` (query) - YYYY-MM-DD format
+- `page` (query) - Page number
+
+#### Get TV Changes
+```
+GET /tv/changes
+```
+
+#### Get Person Changes
+```
+GET /person/changes
+```
+
+---
+
+### COLLECTIONS
+
+#### Get Collection Details
+```
+GET /collection/{collection_id}
+```
+**Parameters:**
+- `language` (query) - ISO 639-1 code (e.g., en-US)
+
+**Response:**
+```json
+{
+  "id": 10,
+  "name": "Star Wars Collection",
+  "overview": "The legendary saga...",
+  "poster_path": "/path.jpg",
+  "backdrop_path": "/path.jpg",
+  "parts": [
+    {
+      "adult": false,
+      "backdrop_path": "/path.jpg",
+      "id": 11,
+      "title": "Star Wars",
+      "original_language": "en",
+      "original_title": "Star Wars",
+      "overview": "Luke Skywalker...",
+      "poster_path": "/path.jpg",
+      "media_type": "movie",
+      "genre_ids": [12, 28, 878],
+      "popularity": 42.289,
+      "release_date": "1977-05-25",
+      "video": false,
+      "vote_average": 8.2,
+      "vote_count": 15234
+    }
+  ]
+}
+```
+
+#### Get Collection Images
+```
+GET /collection/{collection_id}/images
+```
+
+#### Get Collection Translations
+```
+GET /collection/{collection_id}/translations
+```
+
+---
+
+### COMPANIES
+
+#### Get Company Details
+```
+GET /company/{company_id}
+```
+
+**Response:**
+```json
+{
+  "description": "Company description...",
+  "headquarters": "Los Angeles, California, USA",
+  "homepage": "https://www.company.com",
+  "id": 1,
+  "logo_path": "/logo.png",
+  "name": "Company Name",
+  "origin_country": "US",
+  "parent_company": null
+}
+```
+
+#### Get Company Alternative Names
+```
+GET /company/{company_id}/alternative_names
+```
+
+#### Get Company Images
+```
+GET /company/{company_id}/images
+```
+
+---
+
+### CONFIGURATION
+
+#### Get API Configuration
+```
+GET /configuration
+```
+**Response:**
+```json
+{
+  "images": {
+    "base_url": "http://image.tmdb.org/t/p/",
+    "secure_base_url": "https://image.tmdb.org/t/p/",
+    "backdrop_sizes": ["w300", "w780", "w1280", "original"],
+    "logo_sizes": ["w45", "w92", "w154", "w185", "w300", "w500", "original"],
+    "poster_sizes": ["w92", "w154", "w185", "w342", "w500", "w780", "original"],
+    "profile_sizes": ["w45", "w185", "h632", "original"],
+    "still_sizes": ["w92", "w185", "w300", "original"]
+  },
+  "change_keys": ["adult", "air_date", "also_known_as", ...]
+}
+```
+
+#### Get Countries
+```
+GET /configuration/countries
+```
+
+#### Get Languages
+```
+GET /configuration/languages
+```
+
+#### Get Timezones
+```
+GET /configuration/timezones
+```
+
+#### Get Jobs List
+```
+GET /configuration/jobs
+```
+
+---
+
+### CREDITS
+
+#### Get Credit Details
+```
+GET /credit/{credit_id}
+```
+**Response:**
+```json
+{
+  "credit_type": "cast",
+  "department": "Acting",
+  "job": "Actor",
+  "media": {
+    "id": 550,
+    "name": "Fight Club",
+    "original_name": "Fight Club",
+    "character": "Tyler Durden",
+    "episodes": [],
+    "seasons": []
+  },
+  "media_type": "movie",
+  "id": "52fe4495c3a36847f81a2b5b",
+  "person": {
+    "name": "Brad Pitt",
+    "id": 287
+  }
+}
+```
+
+---
+
+### DISCOVER
+
+#### Discover Movies
+```
+GET /discover/movie
+```
+**Parameters:**
+- `language` - ISO 639-1 code
+- `region` - ISO 3166-1 code
+- `sort_by` - popularity.desc, release_date.desc, vote_average.desc, etc.
+- `certification_country`
+- `certification` - Filter by certification (G, PG, PG-13, R, NC-17)
+- `certification.lte` - Maximum certification
+- `include_adult` - Include adult content (boolean)
+- `include_video` - Include video content (boolean)
+- `page` - Page number (default: 1)
+- `primary_release_year` - Filter by year
+- `primary_release_date.gte` - Minimum release date (YYYY-MM-DD)
+- `primary_release_date.lte` - Maximum release date (YYYY-MM-DD)
+- `release_date.gte`
+- `release_date.lte`
+- `with_release_type` - 1=Premiere, 2=Theatrical Limited, 3=Theatrical, 4=Digital, 5=Physical, 6=TV
+- `year` - Filter by year
+- `vote_count.gte` - Minimum vote count
+- `vote_count.lte` - Maximum vote count
+- `vote_average.gte` - Minimum rating
+- `vote_average.lte` - Maximum rating
+- `with_cast` - Comma-separated person IDs
+- `with_crew` - Comma-separated person IDs
+- `with_people` - Comma-separated person IDs
+- `with_companies` - Comma-separated company IDs
+- `with_genres` - Comma-separated genre IDs
+- `without_genres` - Exclude genres
+- `with_keywords` - Comma-separated keyword IDs
+- `without_keywords` - Exclude keywords
+- `with_runtime.gte` - Minimum runtime in minutes
+- `with_runtime.lte` - Maximum runtime in minutes
+- `with_original_language` - ISO 639-1 code
+- `with_watch_providers` - Provider IDs
+- `watch_region` - ISO 3166-1 code
+- `with_watch_monetization_types` - flatrate, free, ads, rent, buy
+
+**Example:**
+```bash
+GET /discover/movie?sort_by=popularity.desc&with_genres=28&primary_release_year=2023
+```
+
+#### Discover TV Shows
+```
+GET /discover/tv
+```
+**Similar parameters to movie discovery, plus:**
+- `first_air_date_year`
+- `first_air_date.gte`
+- `first_air_date.lte`
+- `with_networks` - Network IDs
+- `with_status` - 0=Returning, 1=Planned, 2=In Production, 3=Ended, 4=Cancelled, 5=Pilot
+- `with_type` - 0=Documentary, 1=News, 2=Miniseries, 3=Reality, 4=Scripted, 5=Talk Show, 6=Video
+
+---
+
+### FIND
+
+#### Find by External ID
+```
+GET /find/{external_id}
+```
+**Parameters:**
+- `external_source` (required) - imdb_id, freebase_mid, freebase_id, tvdb_id, tvrage_id, facebook_id, twitter_id, instagram_id
+
+**Example:**
+```bash
+GET /find/tt0137523?external_source=imdb_id
+```
+
+**Response:**
+```json
+{
+  "movie_results": [{...}],
+  "person_results": [{...}],
+  "tv_results": [{...}],
+  "tv_episode_results": [{...}],
+  "tv_season_results": [{...}]
+}
+```
+
+---
+
+### GENRES
+
+#### Get Movie Genres
+```
+GET /genre/movie/list
+```
+**Response:**
+```json
+{
+  "genres": [
+    {"id": 28, "name": "Action"},
+    {"id": 12, "name": "Adventure"},
+    {"id": 16, "name": "Animation"},
+    {"id": 35, "name": "Comedy"},
+    {"id": 80, "name": "Crime"},
+    {"id": 99, "name": "Documentary"},
+    {"id": 18, "name": "Drama"},
+    {"id": 10751, "name": "Family"},
+    {"id": 14, "name": "Fantasy"},
+    {"id": 36, "name": "History"},
+    {"id": 27, "name": "Horror"},
+    {"id": 10402, "name": "Music"},
+    {"id": 9648, "name": "Mystery"},
+    {"id": 10749, "name": "Romance"},
+    {"id": 878, "name": "Science Fiction"},
+    {"id": 10770, "name": "TV Movie"},
+    {"id": 53, "name": "Thriller"},
+    {"id": 10752, "name": "War"},
+    {"id": 37, "name": "Western"}
+  ]
+}
+```
+
+#### Get TV Genres
+```
+GET /genre/tv/list
+```
+
+---
+
+### GUEST SESSIONS
+
+#### Get Guest Session Rated Movies
+```
+GET /guest_session/{guest_session_id}/rated/movies
+```
+
+#### Get Guest Session Rated TV
+```
+GET /guest_session/{guest_session_id}/rated/tv
+```
+
+#### Get Guest Session Rated TV Episodes
+```
+GET /guest_session/{guest_session_id}/rated/tv/episodes
+```
+
+---
+
+### KEYWORDS
+
+#### Get Keyword Details
+```
+GET /keyword/{keyword_id}
+```
+
+#### Get Movies by Keyword
+```
+GET /keyword/{keyword_id}/movies
+```
+
+---
+
+### LISTS
+
+#### Create List
+```
+POST /list
+```
+**Body:**
+```json
+{
+  "name": "My Awesome List",
+  "description": "A list of awesome movies",
+  "language": "en"
+}
+```
+
+#### Get List Details
+```
+GET /list/{list_id}
+```
+
+#### Check Item Status
+```
+GET /list/{list_id}/item_status?movie_id=550
+```
+
+#### Add Movie to List
+```
+POST /list/{list_id}/add_item
+```
+**Body:**
+```json
+{
+  "media_id": 550
+}
+```
+
+#### Remove Movie from List
+```
+POST /list/{list_id}/remove_item
+```
+
+#### Clear List
+```
+POST /list/{list_id}/clear
+```
+
+#### Delete List
+```
+DELETE /list/{list_id}
+```
+
+---
+
+### MOVIE LISTS
+
+#### Get Now Playing Movies
+```
+GET /movie/now_playing
+```
+**Parameters:**
+- `language`
+- `page`
+- `region`
+
+#### Get Popular Movies
+```
+GET /movie/popular
+```
+
+#### Get Top Rated Movies
+```
+GET /movie/top_rated
+```
+
+#### Get Upcoming Movies
+```
+GET /movie/upcoming
+```
+
+---
+
+### MOVIES
+
+#### Get Movie Details
+```
+GET /movie/{movie_id}
+```
+**Parameters:**
+- `language` - ISO 639-1 code
+- `append_to_response` - videos,images,credits,recommendations,similar,reviews,keywords,watch/providers,release_dates,translations
+
+**Response:**
+```json
+{
+  "adult": false,
+  "backdrop_path": "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg",
+  "belongs_to_collection": null,
+  "budget": 63000000,
+  "genres": [
+    {"id": 18, "name": "Drama"}
+  ],
+  "homepage": "http://www.foxmovies.com/movies/fight-club",
+  "id": 550,
+  "imdb_id": "tt0137523",
+  "original_language": "en",
+  "original_title": "Fight Club",
+  "overview": "A ticking-time-bomb insomniac...",
+  "popularity": 61.416,
+  "poster_path": "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+  "production_companies": [
+    {
+      "id": 508,
+      "logo_path": "/7PzJdsLGlR7oW4J0J5Xcd0pHGRg.png",
+      "name": "Regency Enterprises",
+      "origin_country": "US"
+    }
+  ],
+  "production_countries": [
+    {"iso_3166_1": "US", "name": "United States of America"}
+  ],
+  "release_date": "1999-10-15",
+  "revenue": 100853753,
+  "runtime": 139,
+  "spoken_languages": [
+    {"english_name": "English", "iso_639_1": "en", "name": "English"}
+  ],
+  "status": "Released",
+  "tagline": "Mischief. Mayhem. Soap.",
+  "title": "Fight Club",
+  "video": false,
+  "vote_average": 8.433,
+  "vote_count": 26280
+}
+```
+
+#### Get Movie Account States
+```
+GET /movie/{movie_id}/account_states
+```
+**Response:**
+```json
+{
+  "id": 550,
+  "favorite": false,
+  "rated": {
+    "value": 8.5
+  },
+  "watchlist": false
+}
+```
+
+#### Get Alternative Titles
+```
+GET /movie/{movie_id}/alternative_titles
+```
+
+#### Get Movie Changes
+```
+GET /movie/{movie_id}/changes
+```
+**Parameters:**
+- `start_date` - YYYY-MM-DD
+- `end_date` - YYYY-MM-DD
+- `page`
+
+#### Get Movie Credits
+```
+GET /movie/{movie_id}/credits
+```
+**Response:**
+```json
+{
+  "id": 550,
+  "cast": [
+    {
+      "adult": false,
+      "gender": 2,
+      "id": 819,
+      "known_for_department": "Acting",
+      "name": "Edward Norton",
+      "original_name": "Edward Norton",
+      "popularity": 26.99,
+      "profile_path": "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg",
+      "cast_id": 4,
+      "character": "The Narrator",
+      "credit_id": "52fe4250c3a36847f80149f3",
+      "order": 0
+    }
+  ],
+  "crew": [
+    {
+      "adult": false,
+      "gender": 2,
+      "id": 7467,
+      "known_for_department": "Directing",
+      "name": "David Fincher",
+      "original_name": "David Fincher",
+      "popularity": 21.77,
+      "profile_path": "/tpEczFclQZeKAiCeKZZ0adRvtfz.jpg",
+      "credit_id": "52fe4250c3a36847f8014a11",
+      "department": "Directing",
+      "job": "Director"
+    }
+  ]
+}
+```
+
+#### Get External IDs
+```
+GET /movie/{movie_id}/external_ids
+```
+**Response:**
+```json
+{
+  "id": 550,
+  "imdb_id": "tt0137523",
+  "wikidata_id": "Q190050",
+  "facebook_id": "FightClub",
+  "instagram_id": null,
+  "twitter_id": null
+}
+```
+
+#### Get Movie Images
+```
+GET /movie/{movie_id}/images
+```
+**Parameters:**
+- `language` - ISO 639-1 code
+- `include_image_language` - Comma-separated ISO 639-1 codes
+
+**Response:**
+```json
+{
+  "id": 550,
+  "backdrops": [
+    {
+      "aspect_ratio": 1.778,
+      "height": 2160,
+      "iso_639_1": null,
+      "file_path": "/hZkgoQYus5vegHoetLkCJzb17zJ.jpg",
+      "vote_average": 5.39,
+      "vote_count": 6,
+      "width": 3840
+    }
+  ],
+  "logos": [],
+  "posters": [
+    {
+      "aspect_ratio": 0.667,
+      "height": 3000,
+      "iso_639_1": "en",
+      "file_path": "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+      "vote_average": 5.388,
+      "vote_count": 17,
+      "width": 2000
+    }
+  ]
+}
+```
+
+#### Get Movie Keywords
+```
+GET /movie/{movie_id}/keywords
+```
+
+#### Get Latest Movie
+```
+GET /movie/latest
+```
+
+#### Get Movie Lists
+```
+GET /movie/{movie_id}/lists
+```
+
+#### Get Movie Recommendations
+```
+GET /movie/{movie_id}/recommendations
+```
+
+#### Get Release Dates
+```
+GET /movie/{movie_id}/release_dates
+```
+**Response includes certifications by country:**
+```json
+{
+  "id": 550,
+  "results": [
+    {
+      "iso_3166_1": "US",
+      "release_dates": [
+        {
+          "certification": "R",
+          "iso_639_1": "en",
+          "release_date": "1999-10-15T00:00:00.000Z",
+          "type": 3,
+          "note": ""
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### Get Movie Reviews
+```
+GET /movie/{movie_id}/reviews
+```
+
+#### Get Similar Movies
+```
+GET /movie/{movie_id}/similar
+```
+
+#### Get Movie Translations
+```
+GET /movie/{movie_id}/translations
+```
+
+#### Get Movie Videos
+```
+GET /movie/{movie_id}/videos
+```
+**Response:**
+```json
+{
+  "id": 550,
+  "results": [
+    {
+      "iso_639_1": "en",
+      "iso_3166_1": "US",
+      "name": "Fight Club | #TBT Trailer",
+      "key": "BdJKm16Co6M",
+      "site": "YouTube",
+      "size": 1080,
+      "type": "Trailer",
+      "official": true,
+      "published_at": "2014-10-02T19:20:22.000Z",
+      "id": "5c9294240e0a267cd516835f"
+    }
+  ]
+}
+```
+
+#### Get Watch Providers
+```
+GET /movie/{movie_id}/watch/providers
+```
+**Response:**
+```json
+{
+  "id": 550,
+  "results": {
+    "US": {
+      "link": "https://www.themoviedb.org/movie/550-fight-club/watch?locale=US",
+      "flatrate": [
+        {
+          "display_priority": 15,
+          "logo_path": "/68MNrwlkpF7WnmNPXLah69CR5cb.jpg",
+          "provider_id": 337,
+          "provider_name": "Disney Plus"
+        }
+      ],
+      "rent": [
+        {
+          "display_priority": 3,
+          "logo_path": "/q6tl6Ib6X5FT80RMlcDbexIo4St.jpg",
+          "provider_id": 2,
+          "provider_name": "Apple TV"
+        }
+      ],
+      "buy": [
+        {
+          "display_priority": 3,
+          "logo_path": "/q6tl6Ib6X5FT80RMlcDbexIo4St.jpg",
+          "provider_id": 2,
+          "provider_name": "Apple TV"
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Rate Movie
+```
+POST /movie/{movie_id}/rating
+```
+**Body:**
+```json
+{
+  "value": 8.5
+}
+```
+**Note:** Value must be between 0.5 and 10.0 in 0.5 increments
+
+#### Delete Movie Rating
+```
+DELETE /movie/{movie_id}/rating
+```
+
+---
+
+### NETWORKS
+
+#### Get Network Details
+```
+GET /network/{network_id}
+```
+
+#### Get Network Alternative Names
+```
+GET /network/{network_id}/alternative_names
+```
+
+#### Get Network Images
+```
+GET /network/{network_id}/images
+```
+
+---
+
+### PEOPLE LISTS
+
+#### Get Popular People
+```
+GET /person/popular
+```
+
+---
+
+### PEOPLE
+
+#### Get Person Details
+```
+GET /person/{person_id}
+```
+**Parameters:**
+- `language`
+- `append_to_response` - movie_credits,tv_credits,combined_credits,external_ids,images,tagged_images
+
+**Response:**
+```json
+{
+  "adult": false,
+  "also_known_as": [
+    "William Bradley Pitt"
+  ],
+  "biography": "William Bradley Pitt (born December 18, 1963) is an American actor and film producer...",
+  "birthday": "1963-12-18",
+  "deathday": null,
+  "gender": 2,
+  "homepage": null,
+  "id": 287,
+  "imdb_id": "nm0000093",
+  "known_for_department": "Acting",
+  "name": "Brad Pitt",
+  "place_of_birth": "Shawnee, Oklahoma, USA",
+  "popularity": 45.987,
+  "profile_path": "/ajNaPmXVVMJFg9GWmu6MJzTaXdV.jpg"
+}
+```
+
+#### Get Person Changes
+```
+GET /person/{person_id}/changes
+```
+
+#### Get Person Combined Credits
+```
+GET /person/{person_id}/combined_credits
+```
+**Returns both movie and TV credits**
+
+#### Get Person External IDs
+```
+GET /person/{person_id}/external_ids
+```
+
+#### Get Person Images
+```
+GET /person/{person_id}/images
+```
+
+#### Get Latest Person
+```
+GET /person/latest
+```
+
+#### Get Person Movie Credits
+```
+GET /person/{person_id}/movie_credits
+```
+
+#### Get Person TV Credits
+```
+GET /person/{person_id}/tv_credits
+```
+
+#### Get Tagged Images
+```
+GET /person/{person_id}/tagged_images
+```
+
+#### Get Person Translations
+```
+GET /person/{person_id}/translations
+```
+
+---
+
+### REVIEWS
+
+#### Get Review Details
+```
+GET /review/{review_id}
+```
+
+---
+
+### SEARCH
+
+#### Search Collections
+```
+GET /search/collection
+```
+**Parameters:**
+- `query` (required) - Search query
+- `language`
+- `page`
+
+#### Search Companies
+```
+GET /search/company
+```
+
+#### Search Keywords
+```
+GET /search/keyword
+```
+
+#### Search Movies
+```
+GET /search/movie
+```
+**Parameters:**
+- `query` (required)
+- `language`
+- `page`
+- `include_adult` - Include adult content (boolean)
+- `region` - ISO 3166-1 code
+- `year` - Filter by year
+- `primary_release_year`
+
+**Example:**
+```bash
+GET /search/movie?query=Fight+Club&page=1
+```
+
+**Response:**
+```json
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/hZkgoQYus5vegHoetLkCJzb17zJ.jpg",
+      "genre_ids": [18],
+      "id": 550,
+      "original_language": "en",
+      "original_title": "Fight Club",
+      "overview": "A ticking-time-bomb insomniac...",
+      "popularity": 61.416,
+      "poster_path": "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+      "release_date": "1999-10-15",
+      "title": "Fight Club",
+      "video": false,
+      "vote_average": 8.433,
+      "vote_count": 26280
+    }
+  ],
+  "total_pages": 1,
+  "total_results": 12
+}
+```
+
+#### Search Multi (Movies, TV, People)
+```
+GET /search/multi
+```
+**Parameters:**
+- `query` (required)
+- `language`
+- `page`
+- `include_adult`
+
+#### Search People
+```
+GET /search/person
+```
+
+#### Search TV Shows
+```
+GET /search/tv
+```
+**Parameters:**
+- `query` (required)
+- `first_air_date_year`
+- `language`
+- `page`
+- `include_adult`
+
+---
+
+### TRENDING
+
+#### Get All Trending
+```
+GET /trending/all/{time_window}
+```
+**Parameters:**
+- `time_window` (path) - day or week
+
+#### Get Trending Movies
+```
+GET /trending/movie/{time_window}
+```
+
+#### Get Trending People
+```
+GET /trending/person/{time_window}
+```
+
+#### Get Trending TV Shows
+```
+GET /trending/tv/{time_window}
+```
+
+---
+
+### TV SERIES LISTS
+
+#### Get TV Airing Today
+```
+GET /tv/airing_today
+```
+
+#### Get TV On The Air
+```
+GET /tv/on_the_air
+```
+
+#### Get Popular TV Shows
+```
+GET /tv/popular
+```
+
+#### Get Top Rated TV Shows
+```
+GET /tv/top_rated
+```
+
+---
+
+### TV SERIES
+
+#### Get TV Series Details
+```
+GET /tv/{series_id}
+```
+**Parameters:**
+- `language`
+- `append_to_response` - credits,videos,images,recommendations,similar,keywords,watch/providers,content_ratings,aggregate_credits
+
+**Response:**
+```json
+{
+  "adult": false,
+  "backdrop_path": "/path.jpg",
+  "created_by": [
+    {
+      "id": 9813,
+      "credit_id": "5256c8c219c2956ff604858a",
+      "name": "David Benioff",
+      "gender": 2,
+      "profile_path": "/path.jpg"
+    }
+  ],
+  "episode_run_time": [60],
+  "first_air_date": "2011-04-17",
+  "genres": [
+    {"id": 10765, "name": "Sci-Fi & Fantasy"},
+    {"id": 18, "name": "Drama"},
+    {"id": 10759, "name": "Action & Adventure"}
+  ],
+  "homepage": "http://www.hbo.com/game-of-thrones",
+  "id": 1399,
+  "in_production": false,
+  "languages": ["en"],
+  "last_air_date": "2019-05-19",
+  "last_episode_to_air": {
+    "id": 1551830,
+    "name": "The Iron Throne",
+    "overview": "In the aftermath of...",
+    "vote_average": 4.8,
+    "vote_count": 200,
+    "air_date": "2019-05-19",
+    "episode_number": 6,
+    "production_code": "806",
+    "runtime": 80,
+    "season_number": 8,
+    "show_id": 1399,
+    "still_path": "/path.jpg"
+  },
+  "name": "Game of Thrones",
+  "next_episode_to_air": null,
+  "networks": [
+    {
+      "id": 49,
+      "logo_path": "/path.png",
+      "name": "HBO",
+      "origin_country": "US"
+    }
+  ],
+  "number_of_episodes": 73,
+  "number_of_seasons": 8,
+  "origin_country": ["US"],
+  "original_language": "en",
+  "original_name": "Game of Thrones",
+  "overview": "Seven noble families fight...",
+  "popularity": 369.594,
+  "poster_path": "/path.jpg",
+  "production_companies": [
+    {
+      "id": 76043,
+      "logo_path": "/path.png",
+      "name": "HBO Entertainment",
+      "origin_country": "US"
+    }
+  ],
+  "production_countries": [
+    {"iso_3166_1": "US", "name": "United States of America"}
+  ],
+  "seasons": [
+    {
+      "air_date": "2010-12-05",
+      "episode_count": 64,
+      "id": 3627,
+      "name": "Specials",
+      "overview": "",
+      "poster_path": "/path.jpg",
+      "season_number": 0
+    }
+  ],
+  "spoken_languages": [
+    {"english_name": "English", "iso_639_1": "en", "name": "English"}
+  ],
+  "status": "Ended",
+  "tagline": "Winter Is Coming",
+  "type": "Scripted",
+  "vote_average": 8.438,
+  "vote_count": 22012
+}
+```
+
+#### Get TV Series Account States
+```
+GET /tv/{series_id}/account_states
+```
+
+#### Get TV Aggregate Credits
+```
+GET /tv/{series_id}/aggregate_credits
+```
+
+#### Get TV Alternative Titles
+```
+GET /tv/{series_id}/alternative_titles
+```
+
+#### Get TV Series Changes
+```
+GET /tv/{series_id}/changes
+```
+
+#### Get Content Ratings
+```
+GET /tv/{series_id}/content_ratings
+```
+
+#### Get TV Series Credits
+```
+GET /tv/{series_id}/credits
+```
+
+#### Get Episode Groups
+```
+GET /tv/{series_id}/episode_groups
+```
+
+#### Get TV External IDs
+```
+GET /tv/{series_id}/external_ids
+```
+
+#### Get TV Images
+```
+GET /tv/{series_id}/images
+```
+
+#### Get TV Keywords
+```
+GET /tv/{series_id}/keywords
+```
+
+#### Get Latest TV Series
+```
+GET /tv/latest
+```
+
+#### Get TV Recommendations
+```
+GET /tv/{series_id}/recommendations
+```
+
+#### Get TV Reviews
+```
+GET /tv/{series_id}/reviews
+```
+
+#### Get Screened Theatrically
+```
+GET /tv/{series_id}/screened_theatrically
+```
+
+#### Get Similar TV Shows
+```
+GET /tv/{series_id}/similar
+```
+
+#### Get TV Translations
+```
+GET /tv/{series_id}/translations
+```
+
+#### Get TV Videos
+```
+GET /tv/{series_id}/videos
+```
+
+#### Get TV Watch Providers
+```
+GET /tv/{series_id}/watch/providers
+```
+
+#### Rate TV Series
+```
+POST /tv/{series_id}/rating
+```
+**Body:**
+```json
+{
+  "value": 8.5
+}
+```
+
+#### Delete TV Series Rating
+```
+DELETE /tv/{series_id}/rating
+```
+
+---
+
+### TV SEASONS
+
+#### Get Season Details
+```
+GET /tv/{series_id}/season/{season_number}
+```
+**Parameters:**
+- `language`
+- `append_to_response` - credits,images,videos,external_ids
+
+**Response:**
+```json
+{
+  "_id": "5256c89f19c2956ff6046d47",
+  "air_date": "2011-04-17",
+  "episodes": [
+    {
+      "air_date": "2011-04-17",
+      "episode_number": 1,
+      "id": 63056,
+      "name": "Winter Is Coming",
+      "overview": "Jon Arryn, the Hand of the King...",
+      "production_code": "101",
+      "runtime": 62,
+      "season_number": 1,
+      "show_id": 1399,
+      "still_path": "/path.jpg",
+      "vote_average": 7.9,
+      "vote_count": 200,
+      "crew": [],
+      "guest_stars": []
+    }
+  ],
+  "name": "Season 1",
+  "overview": "Trouble is brewing...",
+  "id": 3624,
+  "poster_path": "/path.jpg",
+  "season_number": 1
+}
+```
+
+#### Get Season Account States
+```
+GET /tv/{series_id}/season/{season_number}/account_states
+```
+
+#### Get Season Aggregate Credits
+```
+GET /tv/{series_id}/season/{season_number}/aggregate_credits
+```
+
+#### Get Season Changes
+```
+GET /tv/season/{season_id}/changes
+```
+
+#### Get Season Credits
+```
+GET /tv/{series_id}/season/{season_number}/credits
+```
+
+#### Get Season External IDs
+```
+GET /tv/{series_id}/season/{season_number}/external_ids
+```
+
+#### Get Season Images
+```
+GET /tv/{series_id}/season/{season_number}/images
+```
+
+#### Get Season Translations
+```
+GET /tv/{series_id}/season/{season_number}/translations
+```
+
+#### Get Season Videos
+```
+GET /tv/{series_id}/season/{season_number}/videos
+```
+
+#### Get Season Watch Providers
+```
+GET /tv/{series_id}/season/{season_number}/watch/providers
+```
+
+---
+
+### TV EPISODES
+
+#### Get Episode Details
+```
+GET /tv/{series_id}/season/{season_number}/episode/{episode_number}
+```
+**Parameters:**
+- `language`
+- `append_to_response` - credits,images,videos,external_ids
+
+**Response:**
+```json
+{
+  "air_date": "2011-04-17",
+  "crew": [
+    {
+      "department": "Directing",
+      "job": "Director",
+      "credit_id": "5256c8a219c2956ff6046e77",
+      "adult": false,
+      "gender": 2,
+      "id": 44797,
+      "known_for_department": "Directing",
+      "name": "Tim Van Patten",
+      "original_name": "Tim Van Patten",
+      "popularity": 2.294,
+      "profile_path": "/path.jpg"
+    }
+  ],
+  "episode_number": 1,
+  "guest_stars": [],
+  "name": "Winter Is Coming",
+  "overview": "Jon Arryn, the Hand of the King...",
+  "id": 63056,
+  "production_code": "101",
+  "runtime": 62,
+  "season_number": 1,
+  "still_path": "/path.jpg",
+  "vote_average": 7.9,
+  "vote_count": 200
+}
+```
+
+#### Get Episode Account States
+```
+GET /tv/{series_id}/season/{season_number}/episode/{episode_number}/account_states
+```
+
+#### Get Episode Changes
+```
+GET /tv/episode/{episode_id}/changes
+```
+
+#### Get Episode Credits
+```
+GET /tv/{series_id}/season/{season_number}/episode/{episode_number}/credits
+```
+
+#### Get Episode External IDs
+```
+GET /tv/{series_id}/season/{season_number}/episode/{episode_number}/external_ids
+```
+
+#### Get Episode Images
+```
+GET /tv/{series_id}/season/{season_number}/episode/{episode_number}/images
+```
+
+#### Get Episode Translations
+```
+GET /tv/{series_id}/season/{season_number}/episode/{episode_number}/translations
+```
+
+#### Get Episode Videos
+```
+GET /tv/{series_id}/season/{season_number}/episode/{episode_number}/videos
+```
+
+#### Rate Episode
+```
+POST /tv/{series_id}/season/{season_number}/episode/{episode_number}/rating
+```
+**Body:**
+```json
+{
+  "value": 8.5
+}
+```
+
+#### Delete Episode Rating
+```
+DELETE /tv/{series_id}/season/{season_number}/episode/{episode_number}/rating
+```
+
+---
+
+### TV EPISODE GROUPS
+
+#### Get Episode Group Details
+```
+GET /tv/episode_group/{id}
+```
+
+---
+
+### WATCH PROVIDERS
+
+#### Get Available Regions
+```
+GET /watch/providers/regions
+```
+
+#### Get Movie Watch Providers
+```
+GET /watch/providers/movie
+```
+
+#### Get TV Watch Providers
+```
+GET /watch/providers/tv
+```
+
+---
+
+## Rate Limiting
+
+TMDB enforces rate limiting on API requests:
+- **Default limit:** 50 requests per second
+- **Burst limit:** May vary based on your account type
+- **Response header:** Check `X-RateLimit-Remaining` header
+
+**Best practices:**
+- Cache responses when possible
+- Use `append_to_response` to get multiple data types in one request
+- Implement exponential backoff for failed requests
+- Monitor rate limit headers
+
+**Rate limit headers:**
+```
+X-RateLimit-Limit: 50
+X-RateLimit-Remaining: 49
+X-RateLimit-Reset: 1609459200
+```
+
+---
+
+## Image Configuration
+
+### Getting Image URLs
+
+1. **Fetch configuration:**
+```bash
+GET /configuration
+```
+
+2. **Build image URL:**
+```
+{secure_base_url}{size}{file_path}
+```
+
+**Example:**
+```
+https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg
+```
+
+### Available Image Sizes
+
+**Posters:**
+- w92 (92px width)
+- w154 (154px width)
+- w185 (185px width)
+- w342 (342px width)
+- w500 (500px width)
+- w780 (780px width)
+- original (full resolution)
+
+**Backdrops:**
+- w300 (300px width)
+- w780 (780px width)
+- w1280 (1280px width)
+- original (full resolution)
+
+**Profiles (Person images):**
+- w45 (45px width)
+- w185 (185px width)
+- h632 (632px height)
+- original (full resolution)
+
+**Logos:**
+- w45, w92, w154, w185, w300, w500, original
+
+**Stills (Episode/Video thumbnails):**
+- w92, w185, w300, original
+
+### Responsive Image Strategy
+
+```javascript
+// Desktop
+const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+
+// Mobile
+const posterUrlMobile = `https://image.tmdb.org/t/p/w342${movie.poster_path}`;
+
+// Thumbnail
+const posterUrlThumb = `https://image.tmdb.org/t/p/w185${movie.poster_path}`;
+
+// High-res
+const posterUrlHD = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
+```
+
+---
+
+## Common Workflows
+
+### 1. Search and Display Movie Details
+
+```javascript
+// Step 1: Search for a movie
+const searchResponse = await fetch(
+  'https://api.themoviedb.org/3/search/movie?query=Inception',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const searchData = await searchResponse.json();
+const movieId = searchData.results[0].id; // 27205
+
+// Step 2: Get detailed movie information
+const detailsResponse = await fetch(
+  `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=videos,credits,images`,
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const movieDetails = await detailsResponse.json();
+
+// Step 3: Build image URLs
+const posterUrl = `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`;
+const backdropUrl = `https://image.tmdb.org/t/p/w1280${movieDetails.backdrop_path}`;
+
+console.log(movieDetails);
+```
+
+### 2. Display Trending Movies
+
+```javascript
+const response = await fetch(
+  'https://api.themoviedb.org/3/trending/movie/week?language=en-US',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const data = await response.json();
+const trendingMovies = data.results;
+
+trendingMovies.forEach(movie => {
+  console.log(`${movie.title} - Rating: ${movie.vote_average}`);
+});
+```
+
+### 3. Discover Movies by Genre
+
+```javascript
+// Get genre list first
+const genresResponse = await fetch(
+  'https://api.themoviedb.org/3/genre/movie/list',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const genresData = await genresResponse.json();
+const actionGenreId = genresData.genres.find(g => g.name === 'Action').id; // 28
+
+// Discover action movies
+const discoverResponse = await fetch(
+  `https://api.themoviedb.org/3/discover/movie?with_genres=${actionGenreId}&sort_by=popularity.desc`,
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const discoverData = await discoverResponse.json();
+const actionMovies = discoverData.results;
+```
+
+### 4. Get Cast Information
+
+```javascript
+const response = await fetch(
+  'https://api.themoviedb.org/3/movie/550/credits',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const credits = await response.json();
+
+// Top 5 cast members
+const topCast = credits.cast.slice(0, 5);
+topCast.forEach(actor => {
+  const profileUrl = `https://image.tmdb.org/t/p/w185${actor.profile_path}`;
+  console.log(`${actor.name} as ${actor.character}`);
+});
+
+// Director
+const director = credits.crew.find(person => person.job === 'Director');
+console.log(`Director: ${director.name}`);
+```
+
+### 5. User Authentication and Rating
+
+```javascript
+// Step 1: Create request token
+const tokenResponse = await fetch(
+  'https://api.themoviedb.org/3/authentication/token/new',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const tokenData = await tokenResponse.json();
+const requestToken = tokenData.request_token;
+
+// Step 2: User authorizes (redirect to)
+// https://www.themoviedb.org/authenticate/{requestToken}?redirect_to=YOUR_CALLBACK
+
+// Step 3: Create session
+const sessionResponse = await fetch(
+  'https://api.themoviedb.org/3/authentication/session/new',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    },
+    body: JSON.stringify({
+      request_token: requestToken
+    })
+  }
+);
+const sessionData = await sessionResponse.json();
+const sessionId = sessionData.session_id;
+
+// Step 4: Rate a movie
+const rateResponse = await fetch(
+  `https://api.themoviedb.org/3/movie/550/rating?session_id=${sessionId}`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    },
+    body: JSON.stringify({
+      value: 8.5
+    })
+  }
+);
+```
+
+### 6. Get Watch Providers
+
+```javascript
+const response = await fetch(
+  'https://api.themoviedb.org/3/movie/550/watch/providers',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const data = await response.json();
+
+// US watch providers
+const usProviders = data.results.US;
+console.log('Streaming:', usProviders.flatrate); // Netflix, Disney+, etc.
+console.log('Rent:', usProviders.rent); // iTunes, Google Play, etc.
+console.log('Buy:', usProviders.buy); // Amazon, Vudu, etc.
+```
+
+### 7. Multi-Language Support
+
+```javascript
+// Get movie details in Spanish
+const response = await fetch(
+  'https://api.themoviedb.org/3/movie/550?language=es-ES',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const movieSpanish = await response.json();
+
+// Get available translations
+const translationsResponse = await fetch(
+  'https://api.themoviedb.org/3/movie/550/translations',
+  {
+    headers: {
+      'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+    }
+  }
+);
+const translations = await translationsResponse.json();
+```
+
+---
+
+## Error Handling
+
+### HTTP Status Codes
+
+- **200 OK** - Request successful
+- **201 Created** - Resource created successfully
+- **401 Unauthorized** - Invalid API key or token
+- **404 Not Found** - Resource doesn't exist
+- **429 Too Many Requests** - Rate limit exceeded
+- **500 Internal Server Error** - TMDB server error
+- **503 Service Unavailable** - Service temporarily unavailable
+
+### Error Response Format
+
+```json
+{
+  "status_code": 7,
+  "status_message": "Invalid API key: You must be granted a valid key.",
+  "success": false
+}
+```
+
+### Common Error Codes
+
+- **1** - Success
+- **7** - Invalid API key
+- **8** - Duplicate entry
+- **9** - Service offline
+- **10** - Suspended API key
+- **11** - Internal error
+- **12** - Item/record not found
+- **17** - Session denied
+- **25** - Invalid request token
+- **26** - Invalid username and/or password
+- **30** - Invalid username
+- **32** - Invalid page
+- **33** - Invalid date format
+- **34** - Invalid ID
+
+### Error Handling Example
+
+```javascript
+async function fetchMovie(movieId) {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}`,
+      {
+        headers: {
+          'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+        }
+      }
+    );
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('Movie not found');
+      } else if (response.status === 401) {
+        throw new Error('Invalid API credentials');
+      } else if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please wait.');
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+    
+  } catch (error) {
+    console.error('Error fetching movie:', error.message);
+    throw error;
+  }
+}
+```
+
+---
+
+## Best Practices
+
+### 1. Use Bearer Token Authentication
+```javascript
+// ✅ Good
+headers: {
+  'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+}
+
+// ❌ Avoid
+?api_key=YOUR_API_KEY
+```
+
+### 2. Append Multiple Responses
+```javascript
+// ✅ One request instead of three
+GET /movie/550?append_to_response=videos,credits,images
+
+// ❌ Three separate requests
+GET /movie/550
+GET /movie/550/videos
+GET /movie/550/credits
+```
+
+### 3. Cache API Responses
+```javascript
+const cache = new Map();
+const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
+
+async function fetchWithCache(url) {
+  const cached = cache.get(url);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+  
+  const response = await fetch(url, {
+    headers: { 'Authorization': 'Bearer YOUR_ACCESS_TOKEN' }
+  });
+  const data = await response.json();
+  
+  cache.set(url, { data, timestamp: Date.now() });
+  return data;
+}
+```
+
+### 4. Handle Pagination Efficiently
+```javascript
+async function fetchAllPages(baseUrl) {
+  const firstPage = await fetch(`${baseUrl}&page=1`, {
+    headers: { 'Authorization': 'Bearer YOUR_ACCESS_TOKEN' }
+  }).then(r => r.json());
+  
+  const totalPages = Math.min(firstPage.total_pages, 10); // Limit to 10 pages
+  const allResults = [...firstPage.results];
+  
+  const pagePromises = [];
+  for (let page = 2; page <= totalPages; page++) {
+    pagePromises.push(
+      fetch(`${baseUrl}&page=${page}`, {
+        headers: { 'Authorization': 'Bearer YOUR_ACCESS_TOKEN' }
+      }).then(r => r.json())
+    );
+  }
+  
+  const pages = await Promise.all(pagePromises);
+  pages.forEach(page => allResults.push(...page.results));
+  
+  return allResults;
+}
+```
+
+### 5. Optimize Image Loading
+```javascript
+function getOptimalImageSize(containerWidth) {
+  if (containerWidth <= 92) return 'w92';
+  if (containerWidth <= 154) return 'w154';
+  if (containerWidth <= 185) return 'w185';
+  if (containerWidth <= 342) return 'w342';
+  if (containerWidth <= 500) return 'w500';
+  if (containerWidth <= 780) return 'w780';
+  return 'original';
+}
+
+const size = getOptimalImageSize(300);
+const imageUrl = `https://image.tmdb.org/t/p/${size}${movie.poster_path}`;
+```
+
+### 6. Use Appropriate Language Codes
+```javascript
+// Get user's preferred language
+const userLang = navigator.language || 'en-US';
+
+const response = await fetch(
+  `https://api.themoviedb.org/3/movie/550?language=${userLang}`,
+  {
+    headers: { 'Authorization': 'Bearer YOUR_ACCESS_TOKEN' }
+  }
+);
+```
+
+### 7. Implement Retry Logic
+```javascript
+async function fetchWithRetry(url, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fetch(url, {
+        headers: { 'Authorization': 'Bearer YOUR_ACCESS_TOKEN' }
+      });
+      
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After') || 1;
+        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+        continue;
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+}
+```
+
+### 8. Filter Adult Content
+```javascript
+// Discover movies without adult content
+GET /discover/movie?include_adult=false
+
+// Search movies without adult content
+GET /search/movie?query=movie&include_adult=false
+```
+
+### 9. Use Regional Filters
+```javascript
+// Get movies available in specific region
+GET /discover/movie?watch_region=US&with_watch_providers=8
+
+// Get release dates for specific region
+GET /movie/550/release_dates
+```
+
+### 10. Attribution Requirements
+TMDB requires attribution when using their API:
+
+```html
+<!-- Required attribution -->
+<p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+
+<!-- Include TMDB logo -->
+<img src="tmdb_logo.svg" alt="TMDB" />
+```
+
+**Logo usage:**
+- Use official TMDB logos from their branding page
+- Don't modify colors or aspect ratio
+- Make it less prominent than your app's logo
+- Link back to https://www.themoviedb.org
+
+---
+
+## Language Codes (ISO 639-1)
+
+Common language codes:
+- `en-US` - English (United States)
+- `es-ES` - Spanish (Spain)
+- `es-MX` - Spanish (Mexico)
+- `fr-FR` - French (France)
+- `de-DE` - German (Germany)
+- `it-IT` - Italian (Italy)
+- `pt-BR` - Portuguese (Brazil)
+- `pt-PT` - Portuguese (Portugal)
+- `ja-JP` - Japanese (Japan)
+- `ko-KR` - Korean (Korea)
+- `zh-CN` - Chinese (Simplified)
+- `zh-TW` - Chinese (Traditional)
+- `ru-RU` - Russian (Russia)
+- `ar-SA` - Arabic (Saudi Arabia)
+- `hi-IN` - Hindi (India)
+
+---
+
+## Country Codes (ISO 3166-1)
+
+Common country codes:
+- `US` - United States
+- `GB` - United Kingdom
+- `CA` - Canada
+- `AU` - Australia
+- `FR` - France
+- `DE` - Germany
+- `IT` - Italy
+- `ES` - Spain
+- `MX` - Mexico
+- `BR` - Brazil
+- `JP` - Japan
+- `KR` - South Korea
+- `CN` - China
+- `IN` - India
+- `RU` - Russia
+
+---
+
+## Complete Code Example - React Movie App
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+const API_BASE = 'https://api.themoviedb.org/3';
+const IMAGE_BASE = 'https://image.tmdb.org/t/p';
+const ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN';
+
+function MovieApp() {
+  const [movies, setMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const headers = {
+    'Authorization': `Bearer ${ACCESS_TOKEN}`,
+    'Content-Type': 'application/json'
+  };
+
+  // Fetch popular movies on component mount
+  useEffect(() => {
+    fetchPopularMovies();
+  }, []);
+
+  async function fetchPopularMovies() {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${API_BASE}/movie/popular?language=en-US&page=1`,
+        { headers }
+      );
+      const data = await response.json();
+      setMovies(data.results);
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+    }
+    setLoading(false);
+  }
+
+  async function searchMovies(query) {
+    if (!query.trim()) {
+      fetchPopularMovies();
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${API_BASE}/search/movie?query=${encodeURIComponent(query)}&language=en-US&page=1`,
+        { headers }
+      );
+      const data = await response.json();
+      setMovies(data.results);
+    } catch (error) {
+      console.error('Error searching movies:', error);
+    }
+    setLoading(false);
+  }
+
+  function handleSearch(e) {
+    e.preventDefault();
+    searchMovies(searchQuery);
+  }
+
+  return (
+    <div className="app">
+      <header>
+        <h1>Movie Database</h1>
+        <form onSubmit={handleSearch}>
+          <input
+            type="text"
+            placeholder="Search movies..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button type="submit">Search</button>
+        </form>
+      </header>
+
+      {loading ? (
+        <div className="loading">Loading...</div>
+      ) : (
+        <div className="movie-grid">
+          {movies.map(movie => (
+            <MovieCard key={movie.id} movie={movie} />
+          ))}
+        </div>
+      )}
+
+      <footer>
+        <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+      </footer>
+    </div>
+  );
+}
+
+function MovieCard({ movie }) {
+  const posterUrl = movie.poster_path
+    ? `${IMAGE_BASE}/w342${movie.poster_path}`
+    : '/placeholder.jpg';
+
+  const rating = movie.vote_average.toFixed(1);
+  const releaseYear = movie.release_date?.split('-')[0] || 'N/A';
+
+  return (
+    <div className="movie-card">
+      <img src={posterUrl} alt={movie.title} />
+      <div className="movie-info">
+        <h3>{movie.title}</h3>
+        <p className="year">{releaseYear}</p>
+        <p className="rating">★ {rating}</p>
+        <p className="overview">{movie.overview}</p>
+      </div>
+    </div>
+  );
+}
+
+export default MovieApp;
+```
+
+---
+
+## Additional Resources
+
+### Official Links
+- **Official Website:** https://www.themoviedb.org
+- **API Documentation:** https://developer.themoviedb.org/docs
+- **API Reference:** https://developer.themoviedb.org/reference
+- **Service Status:** https://status.themoviedb.org
+- **Support Forum:** https://www.themoviedb.org/talk/category/5047958519c29526b50017d6
+
+### Useful Tools
+- **API Testing:** Postman, Insomnia
+- **Image Optimization:** ImageMagick, Sharp
+- **Caching:** Redis, LocalStorage
+- **Rate Limiting:** Bottleneck, p-limit
+
+### Community Libraries
+- **JavaScript/Node:** tmdb-api-v3, moviedb-promise
+- **Python:** tmdbv3api, tmdbsimple
+- **PHP:** php-tmdb/api
+- **Ruby:** themoviedb
+- **Java:** tmdb-java
+- **C#:** TMDbLib
+
+---
+
+## Terms of Use
+
+### API Usage Guidelines
+- ✅ Free for non-commercial use
+- ✅ Attribution required
+- ✅ SSL/HTTPS required
+- ❌ No commercial use without license
+- ❌ Don't scrape or abuse the API
+- ❌ Don't claim ownership of TMDB data
+
+### Commercial Licensing
+For commercial use, contact: [email protected]
+
+### Data Rights
+- TMDB doesn't own the images/data
+- User-uploaded content is licensed to TMDB
+- TMDB complies with DMCA takedown requests
+
+---
+
+## Changelog & API Versions
+
+### Version 3 (Current)
+- Stable and production-ready
+- Most widely used version
+- Backward compatible
+
+### Version 4 (Available)
+- New authentication flow
+- Enhanced list management
+- Account-specific features
+- Read/Write permissions
+
+### Migration from v3 to v4
+Version 4 uses different authentication. If migrating:
+1. Generate v4 access token
+2. Use new endpoints at `/4/`
+3. Update authentication headers
+
+---
+
+## FAQ
+
+**Q: Is the API free?**
+A: Yes, for non-commercial use with attribution.
+
+**Q: How do I get commercial access?**
+A: Contact [email protected] with your country information.
+
+**Q: What's the rate limit?**
+A: Approximately 50 requests per second (may vary).
+
+**Q: Can I cache API responses?**
+A: Yes, caching is encouraged to reduce API calls.
+
+**Q: Do you provide an SLA?**
+A: No formal SLA, but they maintain high uptime.
+
+**Q: Can I use the images?**
+A: Yes, TMDB provides access to images, but they don't own them.
+
+**Q: How often is data updated?**
+A: Real-time. Data is continuously updated by the community.
+
+**Q: Do I need attribution?**
+A: Yes, attribution to TMDB is required.
+
+**Q: Can I modify the logo?**
+A: No, don't modify colors, aspect ratio, or orientation.
+
+**Q: Where do I get support?**
+A: Visit the support forum or check documentation.
+
+---
+
+## Status Codes Reference
+
+### Success Codes
+- `1` - Success / Record updated
+- `12` - Item updated successfully
+- `13` - Item deleted successfully
+
+### Error Codes
+- `3` - Authentication failed
+- `7` - Invalid API key
+- `8` - Duplicate entry
+- `9` - Service offline
+- `10` - Suspended API key
+- `11` - Internal error
+- `12` - Item/record not found
+- `14` - Authentication failed
+- `17` - Session denied
+- `23` - Invalid request
+- `25` - Invalid request token
+- `26` - Invalid username/password
+- `27` - Validation error
+- `28` - Invalid id
+- `29` - Invalid date format
+- `30` - Invalid page
+- `31` - Invalid field
+- `32` - Invalid value
+- `33` - Already exists
+- `34` - Unauthorized
+
+---
+
+This completes the comprehensive TMDB API guide. Use this as a reference for building your streaming site. Remember to:
+1. Get your API credentials from TMDB
+2. Always use HTTPS
+3. Include proper attribution
+4. Cache responses when possible
+5. Handle errors gracefully
+6. Respect rate limits
+
+Good luck with your project!

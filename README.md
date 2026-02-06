@@ -4,7 +4,7 @@
 
 ### *It's not just streaming, it's SimplStream.*
 
-## Donate [here](https://cash.app/$simplstudios)
+## Donate to [💲CashApp💲](https://cash.app/$simplstudios)
 
 ---
 

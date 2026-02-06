@@ -179,6 +179,8 @@ This project is for educational and personal use only. SimplStream does not host
 
 Project Link: [https://github.com/SimplStudios/SimplStreamTV](https://github.com/SimplStudios/SimplStreamTV)
 
+Donation [https://cash.app/$simplstudios]
+
 ---
 
 <div align="center">

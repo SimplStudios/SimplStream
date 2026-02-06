@@ -13,6 +13,8 @@
 
 [🚀 Live Demo](https://simplstream.vercel.app) · [📱 Download App](https://github.com/SimplStudios/SimplStreamTV/releases) · [🐛 Report Bug](https://github.com/SimplStudios/SimplStreamTV/issues)
 
+[💲CashApp](https://cash.app/$simplstudios)
+
 </div>
 
 ---

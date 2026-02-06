@@ -1,4 +1,4 @@
-import { ArrowLeft, User, Heart, Tv, Star, Clock, Shield, Globe, Sparkles, XCircle } from 'lucide-react';
+import { ArrowLeft, User, Heart, Tv, Star, Clock, Shield, Globe, Sparkles, XCircle, DollarSign } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface AboutViewProps {
@@ -188,6 +188,31 @@ export function AboutView({ onBack }: AboutViewProps) {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Support Us Card */}
+          <div className={`${cardClass} rounded-lg p-8 text-center shadow-lg mb-8`}>
+            <div className="flex justify-center mb-4">
+              <div className="bg-green-500 p-4 rounded-full">
+                <Heart size={32} className="text-white" />
+              </div>
+            </div>
+            <h2 className={`text-3xl font-bold mb-4 ${textClass}`}>Support SimplStream 💚</h2>
+            <p className={`text-lg mb-6 ${effectiveTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+              Love SimplStream? Help us keep it free and ad-minimal! Your donation helps cover server costs and keeps the project alive.
+            </p>
+            <a
+              href="https://cash.app/$simplstudios"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold text-lg rounded-full transition-all shadow-lg shadow-green-500/25 hover:scale-105"
+            >
+              <DollarSign size={24} />
+              Donate via Cash App
+            </a>
+            <p className={`mt-4 text-sm ${effectiveTheme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+              Every little bit helps! Thank you for your support. 🙏
+            </p>
           </div>
 
           <div className={`${cardClass} rounded-lg p-8 text-center shadow-lg`}>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, User, Lock, Unlock, Trash2, Search, Moon, Sun, Monitor, Play, Volume2, VolumeX, Eye, EyeOff, UserCog, Shield, Film, Settings, Bell, Palette } from 'lucide-react';
+import { ArrowLeft, User, Lock, Unlock, Trash2, Search, Moon, Sun, Monitor, Play, Volume2, VolumeX, Eye, EyeOff, UserCog, Shield, Film, Settings, Bell, Palette, Heart, ExternalLink } from 'lucide-react';
 import { Profile } from '../types';
 import { useTheme } from '../context/ThemeContext';
 import { saveProfile, getSearchHistoryEnabled, setSearchHistoryEnabled, clearSearchHistory, removeProfileData, getCustomAvatar } from '../lib/storage';
@@ -270,6 +270,26 @@ export function SettingsView({ profile, onBack, onProfileUpdate, onLogout }: Set
                         ))}
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <h3 className={`text-lg font-bold mb-4 ${textClass}`}>Support Us</h3>
+                  <div className="space-y-4">
+                    <a
+                      href="https://cash.app/$simplstudios"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-green-600/20 to-green-500/20 hover:from-green-600/30 hover:to-green-500/30 border border-green-500/30 transition-colors`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Heart size={20} className="text-green-500" />
+                        <div className="text-left">
+                          <p className={textClass}>Donate to SimplStream</p>
+                          <p className={`text-sm ${secondaryTextClass}`}>Help keep SimplStream free & running</p>
+                        </div>
+                      </div>
+                      <ExternalLink size={18} className="text-green-500" />
+                    </a>
                   </div>
                 </div>
               </div>

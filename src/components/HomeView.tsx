@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, Search, User, Settings, Lock, Unlock, List, History, Tv, Sparkles, LogOut, Info, FileText, Sun, Moon, Film, UserCog, X, Eye, EyeOff, Play, Plus, Clock, Radio, Trash2, Download, Smartphone } from 'lucide-react';
+import { Home, Search, User, Settings, Lock, Unlock, List, History, Tv, Sparkles, LogOut, Info, FileText, Sun, Moon, Film, UserCog, X, Eye, EyeOff, Play, Plus, Clock, Radio, Trash2, Download, Smartphone, Heart } from 'lucide-react';
 import { Profile, TMDBMovie, TMDBShow, WatchlistItem } from '../types';
 import { tmdbFetch, getTMDBImageUrl } from '../lib/tmdb';
 import { getWatchlist, addToWatchlist, removeFromWatchlist, getWatchHistory, isInWatchlist, generateId, saveProfile, removeProfileData, getSearchHistoryEnabled, setSearchHistoryEnabled, clearSearchHistory, getCustomAvatar } from '../lib/storage';
@@ -478,6 +478,18 @@ export function HomeView({ profile, onLogout, onShowDetail, onShowLiveTV, onProf
                     <Download size={18} />
                     Download TV App
                   </button>
+                  
+                  {/* Support/Donate Button */}
+                  <a 
+                    href="https://cash.app/$simplstudios" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={() => setShowProfileMenu(false)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 mt-2 text-sm font-bold bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white rounded-lg transition-all shadow-lg shadow-green-500/25"
+                  >
+                    <Heart size={18} />
+                    Support SimplStream
+                  </a>
                   
                   <div className={`my-2 border-t ${effectiveTheme === 'dark' ? 'border-white/10' : 'border-black/10'}`}></div>
                   
@@ -1108,6 +1120,15 @@ export function HomeView({ profile, onLogout, onShowDetail, onShowLiveTV, onProf
             >
               Terms
             </button>
+            <span className="text-gray-600">•</span>
+            <a 
+              href="https://cash.app/$simplstudios"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-400 hover:text-green-300 underline flex items-center gap-1"
+            >
+              <Heart size={14} /> Donate
+            </a>
           </div>
           <p className="mt-4 text-xs 4k:text-xl text-gray-500 max-w-3xl mx-auto">
             All video server links are secure and protected. SimplStream does not host content. For DMCA requests, contact hosting providers directly.

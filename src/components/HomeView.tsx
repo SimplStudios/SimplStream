@@ -481,7 +481,7 @@ export function HomeView({ profile, onLogout, onShowDetail, onShowLiveTV, onProf
                   
                   {/* Support/Donate Button */}
                   <a 
-                    href="https://cash.app/$simplstudios" 
+                    href="https://cash.app/$simplstudiosofficial" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setShowProfileMenu(false)}
@@ -1122,7 +1122,7 @@ export function HomeView({ profile, onLogout, onShowDetail, onShowLiveTV, onProf
             </button>
             <span className="text-gray-600">•</span>
             <a 
-              href="https://cash.app/$simplstudios"
+              href="https://cash.app/$simplstudiosofficial"
               target="_blank"
               rel="noopener noreferrer"
               className="text-green-400 hover:text-green-300 underline flex items-center gap-1"

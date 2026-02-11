@@ -4,7 +4,7 @@
 
 ### *It's not just streaming, it's SimplStream.*
 
-## Donate to [💲CashApp💲](https://cash.app/$simplstudios)
+## Donate to [💲CashApp💲](https://cash.app/$simplstudiosofficial)
 
 ---
 
@@ -17,7 +17,7 @@
 
 [🚀 Live Demo](https://simplstream.vercel.app) · [📱 Download App](https://github.com/SimplStudios/SimplStreamTV/releases) · [🐛 Report Bug](https://github.com/SimplStudios/SimplStreamTV/issues)
 
-[💲CashApp](https://cash.app/$simplstudios)
+[💲CashApp](https://cash.app/$simplstudiosofficial)
 
 </div>
 
@@ -179,7 +179,7 @@ This project is for educational and personal use only. SimplStream does not host
 
 Project Link: [https://github.com/SimplStudios/SimplStreamTV](https://github.com/SimplStudios/SimplStreamTV)
 
-Donation [https://cash.app/$simplstudios]
+Donation [https://cash.app/$simplstudiosofficial]
 
 ---
 

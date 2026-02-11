@@ -202,7 +202,7 @@ export function AboutView({ onBack }: AboutViewProps) {
               Love SimplStream? Help us keep it free and ad-minimal! Your donation helps cover server costs and keeps the project alive.
             </p>
             <a
-              href="https://cash.app/$simplstudios"
+              href="https://cash.app/$simplstudiosofficial"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-bold text-lg rounded-full transition-all shadow-lg shadow-green-500/25 hover:scale-105"

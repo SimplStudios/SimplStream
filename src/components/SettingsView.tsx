@@ -276,7 +276,7 @@ export function SettingsView({ profile, onBack, onProfileUpdate, onLogout }: Set
                   <h3 className={`text-lg font-bold mb-4 ${textClass}`}>Support Us</h3>
                   <div className="space-y-4">
                     <a
-                      href="https://cash.app/$simplstudios"
+                      href="https://cash.app/$simplstudiosofficial"
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`w-full flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-green-600/20 to-green-500/20 hover:from-green-600/30 hover:to-green-500/30 border border-green-500/30 transition-colors`}
